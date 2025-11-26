@@ -1,0 +1,130 @@
+.gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+  min-width: 220px;
+}
+
+.gauge-background {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+
+.gauge-track {
+  fill: none;
+  stroke: var(--color-bg-tertiary);
+  stroke-width: 6;
+}
+
+.gauge-fill {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-dasharray 200ms ease-out, stroke 200ms ease-out;
+}
+
+.gauge-fill.safe {
+  stroke: var(--color-success);
+}
+
+.gauge-fill.warning {
+  stroke: var(--color-warning);
+}
+
+.gauge-fill.critical {
+  stroke: var(--color-error);
+}
+
+.gauge-target-marker {
+  fill: var(--color-text-secondary);
+  opacity: 0.6;
+  transition: opacity 200ms ease-out;
+}
+
+.gauge-needle {
+  stroke: var(--color-text);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: all 150ms ease-out;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
+}
+
+.gauge-center {
+  fill: var(--color-text);
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
+}
+
+.gauge-content {
+  text-align: center;
+  width: 100%;
+}
+
+.gauge-label {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+.gauge-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+}
+
+.gauge-value .value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.gauge-value .unit {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.gauge-target {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  font-weight: 500;
+}
+
+.gauge.safe {
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, transparent 100%);
+}
+
+.gauge.warning {
+  border-color: var(--color-warning);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.03) 0%, transparent 100%);
+}
+
+.gauge.critical {
+  border-color: var(--color-error);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.03) 0%, transparent 100%);
+}
