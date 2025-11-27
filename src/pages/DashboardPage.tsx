@@ -31,12 +31,20 @@ export function DashboardPage() {
   const { settings } = useAuthStore();
   const { currentProfile } = useBrewProfileStore();
 
-  const [targetTemp, setTargetTemp] = useState(currentProfile?.targetTemperature || 92);
-  const [goalPressure, setGoalPressure] = useState(currentProfile?.goalPressure || 9);
-  const [brewTimeTarget, setBrewTimeTarget] = useState(currentProfile?.brewingTimeTarget || 28);
+  const [targetTemp, setTargetTemp] = useState(92);
+  const [goalPressure, setGoalPressure] = useState(9);
+  const [brewTimeTarget, setBrewTimeTarget] = useState(28);
   const [brewDisplayMode, setBrewDisplayMode] = useState<'countdown' | 'count-up'>(
     settings?.brewTimeDisplayMode || 'count-up'
   );
+
+  useEffect(() => {
+    if (currentProfile && !isBrewing) {
+      setTargetTemp(currentProfile.targetTemperature);
+      setGoalPressure(currentProfile.goalPressure);
+      setBrewTimeTarget(currentProfile.brewingTimeTarget);
+    }
+  }, [currentProfile, isBrewing]);
 
   const handleProfileChange = (profile: any) => {
     if (profile && !isBrewing) {
