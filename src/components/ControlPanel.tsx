@@ -4,11 +4,11 @@ import '../styles/ControlPanel.css';
 
 interface ControlPanelProps {
   onSendCommand: (command: Command) => void;
-  targetTemp: number;
+  targetTemp?: number;
   onTargetTempChange: (temp: number) => void;
-  goalPressure: number;
+  goalPressure?: number;
   onGoalPressureChange: (pressure: number) => void;
-  brewTimeTarget: number;
+  brewTimeTarget?: number;
   onBrewTimeTargetChange: (time: number) => void;
   isBrewing: boolean;
   onStartBrew: () => void;
@@ -118,7 +118,7 @@ export function ControlPanel({
 
       <div className="control-group">
         <label htmlFor="temp-slider">
-          Target Temperature: <strong>{targetTemp.toFixed(0)}°C</strong>
+          Target Temperature: <strong>{(targetTemp || 92).toFixed(0)}°C</strong>
         </label>
         <input
           id="temp-slider"
@@ -126,7 +126,7 @@ export function ControlPanel({
           min="80"
           max="105"
           step="0.5"
-          value={targetTemp}
+          value={targetTemp || 92}
           onChange={(e) => handleTempChange(parseFloat(e.target.value))}
           className="slider"
           disabled={!machineOn}
@@ -135,7 +135,7 @@ export function ControlPanel({
 
       <div className="control-group">
         <label htmlFor="pressure-slider">
-          Goal Pressure: <strong>{goalPressure.toFixed(1)} bar</strong>
+          Goal Pressure: <strong>{(goalPressure || 9).toFixed(1)} bar</strong>
         </label>
         <input
           id="pressure-slider"
@@ -143,7 +143,7 @@ export function ControlPanel({
           min="0"
           max="15"
           step="0.1"
-          value={goalPressure}
+          value={goalPressure || 9}
           onChange={(e) => handlePressureChange(parseFloat(e.target.value))}
           className="slider"
           disabled={!machineOn}
@@ -152,7 +152,7 @@ export function ControlPanel({
 
       <div className="control-group">
         <label htmlFor="brew-time-slider">
-          Brew Time Target: <strong>{brewTimeTarget}s</strong>
+          Brew Time Target: <strong>{(brewTimeTarget || 28)}s</strong>
         </label>
         <input
           id="brew-time-slider"
@@ -160,7 +160,7 @@ export function ControlPanel({
           min="15"
           max="60"
           step="1"
-          value={brewTimeTarget}
+          value={brewTimeTarget || 28}
           onChange={(e) => onBrewTimeTargetChange(parseInt(e.target.value))}
           className="slider"
           disabled={isBrewing}
