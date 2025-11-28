@@ -49,13 +49,12 @@ export class MockWebSocketServer {
         if (this.preInfusionTime > 0 && brewDuration >= this.preInfusionTime * 1000) {
           this.preInfusionActive = false;
         }
-      }
-
-      if (!this.preInfusionActive) {
+        this.pressure = Math.min(this.pressure + 0.15, this.targetPressure * 0.5);
+      } else {
         this.pressure = Math.min(this.pressure + 0.3, this.targetPressure);
-        this.shotWeight = this.brewStartWeight + (this.sensorData.brewingTime * 0.8);
       }
 
+      this.shotWeight = this.brewStartWeight + (this.sensorData.brewingTime * 0.8);
       this.sensorData.machineStatus = 'brewing';
 
       if (this.temperature > this.targetTemperature - 5) {

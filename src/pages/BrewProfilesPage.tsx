@@ -165,8 +165,8 @@ export function BrewProfilesPage() {
                     min="20"
                     max="110"
                     step="0.5"
-                    value={formData.targetTemperature}
-                    onChange={(e) => setFormData({ ...formData, targetTemperature: parseFloat(e.target.value) })}
+                    value={formData.targetTemperature || ''}
+                    onChange={(e) => setFormData({ ...formData, targetTemperature: e.target.value ? parseFloat(e.target.value) : 92 })}
                   />
                 </div>
                 <div className="form-group">
@@ -177,8 +177,8 @@ export function BrewProfilesPage() {
                     min="0"
                     max="15"
                     step="0.1"
-                    value={formData.goalPressure}
-                    onChange={(e) => setFormData({ ...formData, goalPressure: parseFloat(e.target.value) })}
+                    value={formData.goalPressure || ''}
+                    onChange={(e) => setFormData({ ...formData, goalPressure: e.target.value ? parseFloat(e.target.value) : 9 })}
                   />
                 </div>
               </div>
@@ -192,8 +192,8 @@ export function BrewProfilesPage() {
                     min="0"
                     max="30"
                     step="0.5"
-                    value={formData.preInfusionTime}
-                    onChange={(e) => setFormData({ ...formData, preInfusionTime: parseFloat(e.target.value) })}
+                    value={formData.preInfusionTime || ''}
+                    onChange={(e) => setFormData({ ...formData, preInfusionTime: e.target.value ? parseFloat(e.target.value) : 5 })}
                   />
                 </div>
                 <div className="form-group">
@@ -204,8 +204,8 @@ export function BrewProfilesPage() {
                     min="1"
                     max="120"
                     step="0.5"
-                    value={formData.brewingTimeTarget}
-                    onChange={(e) => setFormData({ ...formData, brewingTimeTarget: parseFloat(e.target.value) })}
+                    value={formData.brewingTimeTarget || ''}
+                    onChange={(e) => setFormData({ ...formData, brewingTimeTarget: e.target.value ? parseFloat(e.target.value) : 28 })}
                   />
                 </div>
               </div>
@@ -219,8 +219,8 @@ export function BrewProfilesPage() {
                     min="0.1"
                     max="50"
                     step="0.1"
-                    value={formData.coffeeInputAmount}
-                    onChange={(e) => setFormData({ ...formData, coffeeInputAmount: parseFloat(e.target.value) })}
+                    value={formData.coffeeInputAmount || ''}
+                    onChange={(e) => setFormData({ ...formData, coffeeInputAmount: e.target.value ? parseFloat(e.target.value) : 18 })}
                   />
                 </div>
                 <div className="form-group">
@@ -231,8 +231,8 @@ export function BrewProfilesPage() {
                     min="0.1"
                     max="100"
                     step="0.1"
-                    value={formData.targetOutputAmount}
-                    onChange={(e) => setFormData({ ...formData, targetOutputAmount: parseFloat(e.target.value) })}
+                    value={formData.targetOutputAmount || ''}
+                    onChange={(e) => setFormData({ ...formData, targetOutputAmount: e.target.value ? parseFloat(e.target.value) : 36 })}
                   />
                 </div>
               </div>
