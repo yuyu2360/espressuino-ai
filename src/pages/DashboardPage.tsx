@@ -3,12 +3,11 @@ import { useWebSocket } from '../hooks/useWebSocket';
 import { useMachineStore } from '../store/machineStore';
 import { useAuthStore } from '../store/authStore';
 import { useBrewProfileStore } from '../store/brewProfileStore';
-import { Gauge } from '../components/Gauge';
+import { CombinedGauges } from '../components/CombinedGauges';
 import { Header } from '../components/Header';
 import { ControlPanel } from '../components/ControlPanel';
 import { AlertDisplay } from '../components/AlertDisplay';
-import { TemperatureGraph } from '../components/TemperatureGraph';
-import { PressureGraph } from '../components/PressureGraph';
+import { CombinedGraph } from '../components/CombinedGraph';
 import { BrewProfileSelector } from '../components/BrewProfileSelector';
 import '../styles/DashboardPage.css';
 
@@ -102,34 +101,12 @@ export function DashboardPage() {
 
         <div className="dashboard-grid">
           <div className="gauges-section">
-            <div className="gauges-row">
-              <Gauge
-                value={machineData.temperature}
-                target={targetTemp}
-                min={20}
-                max={110}
-                label="Temperature"
-                unit="°C"
-                zones={{
-                  safe: [targetTemp - 3, targetTemp + 3],
-                  warning: [targetTemp - 5, targetTemp + 5],
-                  critical: [targetTemp - 10, targetTemp + 10],
-                }}
-              />
-              <Gauge
-                value={machineData.pressure}
-                target={goalPressure}
-                min={0}
-                max={15}
-                label="Pressure"
-                unit="bar"
-                zones={{
-                  safe: [goalPressure - 0.5, goalPressure + 0.5],
-                  warning: [goalPressure - 1, goalPressure + 1],
-                  critical: [goalPressure - 2, goalPressure + 2],
-                }}
-              />
-            </div>
+            <CombinedGauges
+              temperature={machineData.temperature}
+              targetTemperature={targetTemp}
+              pressure={machineData.pressure}
+              targetPressure={goalPressure}
+            />
 
             <div className="status-cards">
               <div className="status-card">
@@ -177,18 +154,14 @@ export function DashboardPage() {
               </button>
             </div>
 
-            <div className="graphs-grid">
-              <TemperatureGraph
-                data={recordedTemperatureData}
-                targetTemp={targetTemp}
-                currentTemp={machineData.temperature}
-              />
-              <PressureGraph
-                data={recordedPressureData}
-                goalPressure={goalPressure}
-                currentPressure={machineData.pressure}
-              />
-            </div>
+            <CombinedGraph
+              temperatureData={recordedTemperatureData}
+              pressureData={recordedPressureData}
+              targetTemp={targetTemp}
+              targetPressure={goalPressure}
+              currentTemp={machineData.temperature}
+              currentPressure={machineData.pressure}
+            />
           </div>
         )}
       </div>
