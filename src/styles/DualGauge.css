@@ -1,0 +1,82 @@
+.dual-gauge-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dual-gauge-svg {
+  transform: rotate(180deg); /* Rotate so 0 is at bottom by default, adjusted by logic */
+  /* Actually, my math assumed 0 is top. Let's just flip the SVG to make bottom-up filling easier if needed. */
+  /* Wait, simpler: I used correct angles in JS. No CSS rotate needed. */
+  filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+}
+
+.readout-overlay {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.readout {
+  text-align: center;
+}
+
+.readout.left { text-align: left; }
+.readout.right { text-align: right; }
+
+.readout .label {
+  display: block;
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.readout .value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.center-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.profile-label {
+  font-size: 12px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.profile-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin: 5px 0;
+}
+
+.target-temp {
+  font-size: 14px;
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.gauge-anim {
+  transition: d 0.3s ease-out;
+}
