@@ -3,7 +3,7 @@ import { useWebSocket } from '../hooks/useWebSocket';
 import { useMachineStore } from '../store/machineStore';
 import { useAuthStore } from '../store/authStore';
 import { useBrewProfileStore } from '../store/brewProfileStore';
-import { CombinedGauges } from '../components/CombinedGauges';
+import { DualHalfGauge } from '../components/DualHalfGauge';
 import { Header } from '../components/Header';
 import { ControlPanel } from '../components/ControlPanel';
 import { AlertDisplay } from '../components/AlertDisplay';
@@ -101,7 +101,7 @@ export function DashboardPage() {
 
         <div className="dashboard-grid">
           <div className="gauges-section">
-            <CombinedGauges
+            <DualHalfGauge
               temperature={machineData.temperature}
               targetTemperature={targetTemp}
               pressure={machineData.pressure}
