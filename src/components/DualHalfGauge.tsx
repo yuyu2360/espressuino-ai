@@ -12,19 +12,24 @@ interface DualHalfGaugeProps {
 }
 
 export function DualHalfGauge({
-  temperature,
-  targetTemperature,
-  pressure,
-  targetPressure,
+  temperature = 0,
+  targetTemperature = 92,
+  pressure = 0,
+  targetPressure = 9,
   minTemp = 70,
   maxTemp = 110,
   minPressure = 0,
   maxPressure = 15,
 }: DualHalfGaugeProps) {
-  const getTempPercentage = () => (temperature - minTemp) / (maxTemp - minTemp);
-  const getPressurePercentage = () => (pressure - minPressure) / (maxPressure - minPressure);
-  const getTargetTempPercentage = () => (targetTemperature - minTemp) / (maxTemp - minTemp);
-  const getTargetPressurePercentage = () => (targetPressure - minPressure) / (maxPressure - minPressure);
+  const temp = temperature ?? 0;
+  const targetTemp = targetTemperature ?? 92;
+  const pres = pressure ?? 0;
+  const targetPres = targetPressure ?? 9;
+
+  const getTempPercentage = () => (temp - minTemp) / (maxTemp - minTemp);
+  const getPressurePercentage = () => (pres - minPressure) / (maxPressure - minPressure);
+  const getTargetTempPercentage = () => (targetTemp - minTemp) / (maxTemp - minTemp);
+  const getTargetPressurePercentage = () => (targetPres - minPressure) / (maxPressure - minPressure);
 
   const tempPercent = Math.max(0, Math.min(1, getTempPercentage()));
   const pressurePercent = Math.max(0, Math.min(1, getPressurePercentage()));
@@ -149,10 +154,10 @@ export function DualHalfGauge({
         <g className="center-display">
           <rect x="150" y="80" width="100" height="80" rx="8" className="center-bg" />
           <text x="200" y="105" className="center-temp">
-            {temperature.toFixed(0)}°C
+            {temp.toFixed(0)}°C
           </text>
           <text x="200" y="150" className="center-pressure">
-            {pressure.toFixed(1)} bar
+            {pres.toFixed(1)} bar
           </text>
         </g>
       </svg>
@@ -161,15 +166,15 @@ export function DualHalfGauge({
         <div className="stat-column">
           <div className="stat-item">
             <span className="stat-label">Temperature</span>
-            <span className="stat-value temp-value">{temperature.toFixed(1)}°C</span>
-            <span className="stat-target">Target: {targetTemperature.toFixed(0)}°C</span>
+            <span className="stat-value temp-value">{temp.toFixed(1)}°C</span>
+            <span className="stat-target">Target: {targetTemp.toFixed(0)}°C</span>
           </div>
         </div>
         <div className="stat-column">
           <div className="stat-item">
             <span className="stat-label">Pressure</span>
-            <span className="stat-value pressure-value">{pressure.toFixed(1)} bar</span>
-            <span className="stat-target">Target: {targetPressure.toFixed(1)} bar</span>
+            <span className="stat-value pressure-value">{pres.toFixed(1)} bar</span>
+            <span className="stat-target">Target: {targetPres.toFixed(1)} bar</span>
           </div>
         </div>
       </div>
