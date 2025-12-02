@@ -8,11 +8,10 @@ interface DualGaugeProps {
   targetPressure: number;
 }
 
-export const DualGauge: React.FC<DualGaugeProps> = ({ 
-  temp, 
-  targetTemp, 
-  pressure, 
-  targetPressure 
+export const DualGauge: React.FC<DualGaugeProps> = ({
+  temp,
+  targetTemp,
+  pressure
 }) => {
   // CONFIGURATION
   const size = 300;
@@ -27,14 +26,6 @@ export const DualGauge: React.FC<DualGaugeProps> = ({
   // Normalization (0 to 1)
   const tempPct = Math.min(1, Math.max(0, (temp - minTemp) / (maxTemp - minTemp)));
   const pressPct = Math.min(1, Math.max(0, (pressure - minPress) / (maxPress - minPress)));
-
-  // ARC MATH
-  // We want two arcs. 
-  // Left (Temp): Starts bottom-center-left, goes to top-center-left.
-  // Right (Pressure): Starts bottom-center-right, goes to top-center-right.
-  // We leave a ~30 degree gap at top and bottom.
-  const arcLength = 150; // Degrees per gauge
-  const startOffset = 15; // Gap from bottom center
 
   // Helper to get circle coordinates
   const getCoords = (angleInDegrees: number) => {
@@ -63,29 +54,23 @@ export const DualGauge: React.FC<DualGaugeProps> = ({
   // Let's work in standard SVG degrees where 0 is right (3 o'clock).
   // To simplify, we rotate the whole SVG or do math relative to vertical.
   
-  // Let's use a dasharray trick for the "ticks".
-  // Circumference approx 880px.
-  const circumference = 2 * Math.PI * radius;
-  const dashSize = 4; 
+  // Dash sizing
+  const dashSize = 4;
   const gapSize = 4;
-  
+
   // --- LEFT GAUGE (TEMP) ---
   // Range: 195 deg to 345 deg (sweeping clockwise? No, bottom to top)
   // Let's say Bottom is 180. Top is 0.
   // Left gauge: Starts 195, ends 345.
-  const leftStart = 195;
-  const leftEnd = 345;
-  const leftTotalAngle = leftEnd - leftStart;
+  const leftTotalAngle = 150;
   const leftActiveAngle = leftTotalAngle * tempPct;
-  
+
   // --- RIGHT GAUGE (PRESSURE) ---
   // Range: 165 deg to 15 deg (sweeping counter-clockwise)
   // Let's use 165 down to 15.
-  const rightStart = 165;
-  const rightEnd = 15;
-  // For SVG path: Start at Bottom (165), End at Top (15). 
+  // For SVG path: Start at Bottom (165), End at Top (15).
   // Total sweep 150 deg.
-  const rightTotalAngle = 150; 
+  const rightTotalAngle = 150;
   const rightActiveAngle = rightTotalAngle * pressPct;
 
   return (
