@@ -116,15 +116,27 @@
 
 .gauge.safe {
   border-color: var(--color-success);
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, transparent 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.03) 0%,
+    transparent 100%
+  );
 }
 
 .gauge.warning {
   border-color: var(--color-warning);
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.03) 0%, transparent 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.03) 0%,
+    transparent 100%
+  );
 }
 
 .gauge.critical {
   border-color: var(--color-error);
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.03) 0%, transparent 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.03) 0%,
+    transparent 100%
+  );
 }

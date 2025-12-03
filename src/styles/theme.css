@@ -1,5 +1,5 @@
 :root,
-[data-theme='dark'] {
+[data-theme="dark"] {
   --color-primary: #2563eb;
   --color-primary-light: #3b82f6;
   --color-primary-dark: #1e40af;
@@ -20,6 +20,10 @@
   --color-warning-light: #fbbf24;
   --color-warning-dark: #d97706;
 
+  --color-info: #3b82f6;
+  --color-info-light: #60a5fa;
+  --color-info-dark: #2563eb;
+
   --color-error: #ef4444;
   --color-error-light: #f87171;
   --color-error-dark: #dc2626;
@@ -37,9 +41,12 @@
 
   --color-shadow: rgba(0, 0, 0, 0.5);
 
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-    sans-serif;
-  --font-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  --shadow-gauge: 0 0 30px var(--color-shadow);
+  --shadow-ticks: 0 0 4px var(--color-shadow);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+  --font-mono: "Monaco", "Menlo", "Ubuntu Mono", monospace;
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -64,7 +71,7 @@
   --z-tooltip: 600;
 }
 
-[data-theme='light'] {
+[data-theme="light"] {
   --color-primary: #2563eb;
   --color-primary-light: #3b82f6;
   --color-primary-dark: #1e40af;
@@ -85,6 +92,10 @@
   --color-warning-light: #fbbf24;
   --color-warning-dark: #d97706;
 
+  --color-info: #3b82f6;
+  --color-info-light: #60a5fa;
+  --color-info-dark: #2563eb;
+
   --color-error: #ef4444;
   --color-error-light: #f87171;
   --color-error-dark: #dc2626;
@@ -100,11 +111,14 @@
   --color-border: #cbd5e1;
   --color-border-light: #e2e8f0;
 
-  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-shadow: rgba(0, 0, 0, 0.25);
 
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-    sans-serif;
-  --font-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  --shadow-gauge: 0 0 30px var(--color-shadow);
+  --shadow-ticks: 0 0 6px var(--color-shadow);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+  --font-mono: "Monaco", "Menlo", "Ubuntu Mono", monospace;
 
   --radius-sm: 4px;
   --radius-md: 8px;

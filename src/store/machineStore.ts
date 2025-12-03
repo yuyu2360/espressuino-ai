@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import type { SensorData, DataPoint, Alert } from '../types';
+import { create } from "zustand";
+import type { SensorData, DataPoint, Alert } from "../types";
 
 interface MachineStateStore {
   sensorData: SensorData | null;
@@ -21,7 +21,11 @@ interface MachineStateStore {
   recordDataPoint: () => void;
   clearRecordedData: () => void;
   setThresholds: (tempThreshold: number, pressureThreshold: number) => void;
-  checkAlerts: (targetTemp: number, goalPressure: number, brewTimeTarget: number) => Alert | null;
+  checkAlerts: (
+    targetTemp: number,
+    goalPressure: number,
+    brewTimeTarget: number
+  ) => Alert | null;
 }
 
 export const useMachineStore = create<MachineStateStore>((set, get) => ({
@@ -74,20 +78,22 @@ export const useMachineStore = create<MachineStateStore>((set, get) => ({
     if (!data || !state.isBrewing) return;
 
     const timestamp = Date.now();
+    // Keep last 60 points to prevent performance issues
+    const limit = (arr: DataPoint[]) => arr.slice(-60);
 
     set({
-      recordedTemperatureData: [
+      recordedTemperatureData: limit([
         ...state.recordedTemperatureData,
         { time: timestamp, value: data.temperature },
-      ],
-      recordedPressureData: [
+      ]),
+      recordedPressureData: limit([
         ...state.recordedPressureData,
         { time: timestamp, value: data.pressure },
-      ],
-      recordedWeightData: [
+      ]),
+      recordedWeightData: limit([
         ...state.recordedWeightData,
         { time: timestamp, value: data.shotWeight },
-      ],
+      ]),
     });
   },
 
@@ -106,7 +112,11 @@ export const useMachineStore = create<MachineStateStore>((set, get) => ({
     });
   },
 
-  checkAlerts: (targetTemp: number, goalPressure: number, brewTimeTarget: number): Alert | null => {
+  checkAlerts: (
+    targetTemp: number,
+    goalPressure: number,
+    brewTimeTarget: number
+  ): Alert | null => {
     const state = get();
     const data = state.sensorData;
 
@@ -120,21 +130,24 @@ export const useMachineStore = create<MachineStateStore>((set, get) => ({
     ) {
       return {
         id: `temp-${now}`,
-        type: 'temperature_drop',
-        title: 'Temperature Drop',
+        type: "temperature_drop",
+        title: "Temperature Drop",
         message: `Temperature dropped to ${data.temperature}°C (target: ${targetTemp}°C)`,
-        severity: 'warning',
+        severity: "warning",
         timestamp: now,
       };
     }
 
-    if (state.isBrewing && data.pressure < goalPressure - state.pressureAlertThreshold) {
+    if (
+      state.isBrewing &&
+      data.pressure < goalPressure - state.pressureAlertThreshold
+    ) {
       return {
         id: `pressure-${now}`,
-        type: 'pressure_drop',
-        title: 'Pressure Drop',
+        type: "pressure_drop",
+        title: "Pressure Drop",
         message: `Pressure dropped to ${data.pressure} bar (goal: ${goalPressure} bar)`,
-        severity: 'warning',
+        severity: "warning",
         timestamp: now,
       };
     }
@@ -147,10 +160,10 @@ export const useMachineStore = create<MachineStateStore>((set, get) => ({
     ) {
       return {
         id: `brew-time-${now}`,
-        type: 'brew_complete',
-        title: 'Brewing Time Reached',
+        type: "brew_complete",
+        title: "Brewing Time Reached",
         message: `Target brewing time of ${brewTimeTarget}s reached`,
-        severity: 'info',
+        severity: "info",
         timestamp: now,
       };
     }

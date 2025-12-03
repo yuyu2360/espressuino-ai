@@ -14,7 +14,7 @@
 .gauge-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.8));
+  filter: drop-shadow(var(--shadow-gauge));
 }
 
 .gauge-value-label {
@@ -25,7 +25,7 @@
 
 .tick-active {
   transition: fill 0.15s ease;
-  filter: drop-shadow(0 0 5px currentColor);
+  filter: drop-shadow(var(--shadow-ticks));
 }
 
 .tick-inactive {
@@ -61,7 +61,7 @@
 
 .target-divider {
   color: #475569;
-  opacity: 0.6;
+  opacity: 0.3;
 }
 
 @media (max-width: 768px) {
