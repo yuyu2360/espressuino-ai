@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espressuino Brewing Dashboard</title>
+    <style>
+        body {
+            background-color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+
+        .circle-ui {
+            width: 400px;
+            height: 400px;
+            background-color: #050505;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+        }
+
+        .tick {
+            position: absolute;
+            width: 8px;
+            height: 25px;
+            background-color: #444;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .tick.active-red {
+            background-color: #ff3b3b;
+            box-shadow: 0 0 5px #ff3b3b;
+        }
+
+        .tick.active-blue {
+            background-color: #3b82f6;
+            box-shadow: 0 0 5px #3b82f6;
+        }
+
+        .inner-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .top-stats {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            gap: 40px;
+        }
+
+        /* Added monospace font to prevent jitter when numbers change width */
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #aaa;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+
+        .sub-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .phases {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .steps {
+            font-size: 1.1rem;
+            color: #ddd;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .arrow-left {
+            left: 40px;
+        }
+
+        .arrow-right {
+            right: 40px;
+        }
+
+        .bottom-controls {
+            position: absolute;
+            bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .icon-lg {
+            font-size: 1.5rem;
+        }
+
+        .gauge-icon {
+            position: absolute;
+            font-size: 1.2rem;
+        }
+
+        .temp-icon {
+            bottom: 50px;
+            left: 60px;
+            color: #ff3b3b;
+        }
+
+        .pres-icon {
+            bottom: 50px;
+            right: 60px;
+            color: #3b82f6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="circle-ui">
+        <div id="tick-container"></div>
+
+        <div class="top-stats">
+            <span class="stat-number"><span id="val-temp">20</span>°C</span>
+            <span class="stat-number"><span id="val-pressure">0</span> bar</span>
+        </div>
+
+        <div class="inner-content">
+            <div class="sub-stats">
+                <span>🌡 80°C</span>
+                <span>⏱ 0:30</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const tickContainer = document.getElementById('tick-container');
+        const totalTicksSide = 25;
+        const radius = 175;
+        const leftTicks = [];
+        const rightTicks = [];
+
+        function createTick(angle, type) {
+            const tick = document.createElement('div');
+            tick.classList.add('tick');
+            tick.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px)`;
+            tickContainer.appendChild(tick);
+            if (type === 'left') leftTicks.push(tick);
+            else rightTicks.push(tick);
+        }
+
+        // Generate Left Ticks (Temp)
+        for (let i = 0; i < totalTicksSide; i++) {
+            const startAngle = 205;
+            const endAngle = 335;
+            const angle = startAngle + (i * ((endAngle - startAngle) / totalTicksSide));
+            createTick(angle, 'left');
+        }
+
+        // Generate Right Ticks (Pressure)
+        for (let i = 0; i < totalTicksSide; i++) {
+            const startAngle = 155;
+            const endAngle = 25;
+            const angle = startAngle - (i * ((startAngle - endAngle) / totalTicksSide));
+            createTick(angle, 'right');
+        }
+
+        // --- NEW: Helper function to animate numbers ---
+        function animateValue(objId, start, end, duration) {
+            const obj = document.getElementById(objId);
+            let startTimestamp = null;
+
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+
+                // Calculate current number based on progress percentage
+                // Math.floor keeps it a whole number
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function animateGauges() {
+            const tickSpeed = 50; // Milliseconds per tick
+
+            // 1. Setup Left Side (Temperature)
+            const leftTarget = Math.floor(totalTicksSide * 0.7); // 70% full
+            let leftCount = 0;
+
+            // Calculate total time this will take so we can sync the number
+            const leftDuration = leftTarget * tickSpeed;
+
+            // Start Tick Animation
+            const leftInterval = setInterval(() => {
+                if (leftCount >= leftTarget) clearInterval(leftInterval);
+                if (leftTicks[leftCount]) {
+                    leftTicks[leftCount].classList.add('active-red');
+                    leftCount++;
+                }
+            }, tickSpeed);
+
+            // Start Number Animation (Go from 20 to 92)
+            animateValue("val-temp", 20, 92, leftDuration);
+
+
+            // 2. Setup Right Side (Pressure)
+            const rightTarget = Math.floor(totalTicksSide * 0.4); // 40% full
+            let rightCount = 0;
+            const rightDuration = rightTarget * tickSpeed;
+
+            const rightInterval = setInterval(() => {
+                if (rightCount >= rightTarget) clearInterval(rightInterval);
+                if (rightTicks[rightCount]) {
+                    rightTicks[rightCount].classList.add('active-blue');
+                    rightCount++;
+                }
+            }, tickSpeed);
+
+            // Start Number Animation (Go from 0 to 9)
+            animateValue("val-pressure", 0, 9, rightDuration);
+        }
+
+        setTimeout(animateGauges, 500);
+
+    </script>
+</body>
+
+</html>
