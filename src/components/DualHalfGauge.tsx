@@ -1,5 +1,5 @@
 import '../styles/DualHalfGauge.css';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 interface DualHalfGaugeProps {
   temperature: number;
@@ -10,25 +10,6 @@ interface DualHalfGaugeProps {
   maxTemp?: number;
   minPressure?: number;
   maxPressure?: number;
-}
-
-function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
-  const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
-  return {
-    x: centerX + radius * Math.cos(angleInRadians),
-    y: centerY + radius * Math.sin(angleInRadians),
-  };
-}
-
-function describeArc(x: number, y: number, radius: number, startAngle: number, endAngle: number, sweepFlag: number) {
-  const startPoint = polarToCartesian(x, y, radius, startAngle);
-  const endPoint = polarToCartesian(x, y, radius, endAngle);
-  const largeArcFlag = Math.abs(endAngle - startAngle) <= 180 ? '0' : '1';
-
-  return [
-    'M', startPoint.x, startPoint.y,
-    'A', radius, radius, 0, largeArcFlag, sweepFlag, endPoint.x, endPoint.y,
-  ].join(' ');
 }
 
 export function DualHalfGauge({
@@ -46,121 +27,112 @@ export function DualHalfGauge({
   const pres = pressure ?? 0;
   const targetPres = targetPressure ?? 9;
 
+  const [activeTempTicks, setActiveTempTicks] = useState(0);
+  const [activePressureTicks, setActivePressureTicks] = useState(0);
+
+  const totalTicksSide = 25;
+  const radius = 175;
+
   const tempPercent = Math.max(0, Math.min(1, (temp - minTemp) / (maxTemp - minTemp)));
   const pressurePercent = Math.max(0, Math.min(1, (pres - minPressure) / (maxPressure - minPressure)));
 
-  const radius = 130;
-  const center = 170;
+  const tempTicksActive = Math.round(totalTicksSide * tempPercent);
+  const pressureTicksActive = Math.round(totalTicksSide * pressurePercent);
 
-  const paths = useMemo(() => {
-    const leftPathFull = describeArc(center, center, radius, 210, 330, 1);
-    const rightPathFull = describeArc(center, center, radius, 150, 30, 0);
-    return { leftPathFull, rightPathFull };
-  }, []);
+  useEffect(() => {
+    setActiveTempTicks(tempTicksActive);
+  }, [tempTicksActive]);
 
-  const leftPathLength = 2 * Math.PI * radius * (120 / 360);
-  const rightPathLength = 2 * Math.PI * radius * (120 / 360);
+  useEffect(() => {
+    setActivePressureTicks(pressureTicksActive);
+  }, [pressureTicksActive]);
 
-  const leftVisibleLength = leftPathLength * tempPercent;
-  const rightVisibleLength = rightPathLength * pressurePercent;
+  const getTicks = (startAngle: number, endAngle: number, type: 'left' | 'right') => {
+    const ticks = [];
+    for (let i = 0; i < totalTicksSide; i++) {
+      let angle: number;
+      if (type === 'left') {
+        angle = startAngle + (i * ((endAngle - startAngle) / totalTicksSide));
+      } else {
+        angle = startAngle - (i * ((startAngle - endAngle) / totalTicksSide));
+      }
+      ticks.push({ id: i, angle });
+    }
+    return ticks;
+  };
+
+  const leftTicks = useMemo(
+    () => getTicks(205, 335, 'left'),
+    []
+  );
+
+  const rightTicks = useMemo(
+    () => getTicks(155, 25, 'right'),
+    []
+  );
+
+  const createTickElement = (angle: number, active: boolean, color: string) => {
+    const angleInRadians = (angle - 90) * (Math.PI / 180);
+    const x = 200 + radius * Math.cos(angleInRadians);
+    const y = 200 + radius * Math.sin(angleInRadians);
+
+    return (
+      <g key={`tick-${angle}`} transform={`translate(${x}, ${y}) rotate(${angle})`}>
+        <rect
+          x="-4"
+          y="-12"
+          width="8"
+          height="25"
+          rx="4"
+          fill={active ? color : '#444'}
+          opacity={active ? 1 : 0.3}
+          className={active ? 'tick-active' : 'tick-inactive'}
+        />
+      </g>
+    );
+  };
 
   return (
     <div className="dual-half-gauge">
-      <div className="gauge-container">
-        <div className="readout-overlay">
-          <div className="readout-group readout-left">
-            <span className="label">TEMP</span>
-            <span className="value">
-              {temp.toFixed(1)}
-              <span className="unit">°C</span>
-            </span>
-          </div>
-          <div className="readout-group readout-right">
-            <span className="label">PRESSURE</span>
-            <span className="value">
-              {pres.toFixed(1)}
-              <span className="unit">bar</span>
-            </span>
-          </div>
-        </div>
-
-        <svg width="340" height="340" viewBox="0 0 340 340" className="gauge-svg">
+      <div className="gauge-circle">
+        <svg width="400" height="400" viewBox="0 0 400 400" className="gauge-svg">
           <defs>
-            <linearGradient id="gradTemp" x1="0%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="#1e40af" />
-              <stop offset="40%" stopColor="#3b82f6" />
-              <stop offset="100%" stopColor="#93c5fd" />
-            </linearGradient>
-            <linearGradient id="gradPress" x1="0%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="#991b1b" />
-              <stop offset="40%" stopColor="#ef4444" />
-              <stop offset="100%" stopColor="#fca5a5" />
-            </linearGradient>
-
-            <mask id="maskTemp">
-              <path
-                fill="none"
-                stroke="white"
-                strokeWidth="24"
-                strokeDasharray={`${leftVisibleLength} ${leftPathLength}`}
-                strokeLinecap="butt"
-                d={paths.leftPathFull}
-              />
-            </mask>
-
-            <mask id="maskPress">
-              <path
-                fill="none"
-                stroke="white"
-                strokeWidth="24"
-                strokeDasharray={`${rightVisibleLength} ${rightPathLength}`}
-                strokeLinecap="butt"
-                d={paths.rightPathFull}
-              />
-            </mask>
+            <filter id="glow-temp">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <filter id="glow-pressure">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
 
-          <path
-            fill="none"
-            stroke="#1e293b"
-            strokeWidth="24"
-            strokeDasharray="5 7"
-            strokeLinecap="butt"
-            d={paths.leftPathFull}
-          />
-          <path
-            fill="none"
-            stroke="url(#gradTemp)"
-            strokeWidth="24"
-            strokeDasharray="5 7"
-            strokeLinecap="butt"
-            mask="url(#maskTemp)"
-            d={paths.leftPathFull}
-          />
+          <circle cx="200" cy="200" r="200" fill="#050505" />
 
-          <path
-            fill="none"
-            stroke="#1e293b"
-            strokeWidth="24"
-            strokeDasharray="5 7"
-            strokeLinecap="butt"
-            d={paths.rightPathFull}
-          />
-          <path
-            fill="none"
-            stroke="url(#gradPress)"
-            strokeWidth="24"
-            strokeDasharray="5 7"
-            strokeLinecap="butt"
-            mask="url(#maskPress)"
-            d={paths.rightPathFull}
-          />
+          <g id="tick-container">
+            {leftTicks.map((tick) => createTickElement(tick.angle, tick.id < activeTempTicks, '#ff3b3b'))}
+            {rightTicks.map((tick) => createTickElement(tick.angle, tick.id < activePressureTicks, '#3b82f6'))}
+          </g>
+
+          <text x="80" y="40" className="gauge-value-label" fill="white" textAnchor="middle">
+            {temp.toFixed(1)}°C
+          </text>
+          <text x="320" y="40" className="gauge-value-label" fill="white" textAnchor="middle">
+            {pres.toFixed(1)} bar
+          </text>
         </svg>
 
-        <div className="center-status">
-          <div className="center-label">TARGET</div>
+        <div className="inner-content">
           <div className="center-target">
-            {targetTemp.toFixed(0)}° <span className="divider">|</span> {targetPres.toFixed(1)} bar
+            <span className="target-value">{targetTemp.toFixed(0)}°</span>
+            <span className="target-divider">|</span>
+            <span className="target-value">{targetPres.toFixed(1)} bar</span>
           </div>
         </div>
       </div>

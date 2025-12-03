@@ -3,94 +3,65 @@
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  background: var(--color-bg);
-  border-radius: var(--radius-lg);
 }
 
-.gauge-container {
+.gauge-circle {
   position: relative;
-  width: 340px;
-  height: 340px;
-}
-
-.readout-overlay {
-  position: absolute;
-  top: 60px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 40px;
-  box-sizing: border-box;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.readout-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.readout-left {
-  text-align: right;
-}
-
-.readout-right {
-  text-align: left;
-}
-
-.label {
-  display: block;
-  font-size: 11px;
-  color: #94a3b8;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-.value {
-  display: block;
-  font-size: 28px;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.unit {
-  font-size: 14px;
-  color: #94a3b8;
-  margin-left: 2px;
-}
-
-.center-status {
-  position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.center-label {
-  font-size: 11px;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 8px;
-}
-
-.center-target {
-  font-size: 18px;
-  font-weight: 600;
-  color: #e2e8f0;
-}
-
-.divider {
-  color: #475569;
-  margin: 0 8px;
+  width: 400px;
+  height: 400px;
 }
 
 .gauge-svg {
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.8));
+}
+
+.gauge-value-label {
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tick-active {
+  transition: fill 0.15s ease;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.tick-inactive {
+  transition: fill 0.15s ease;
+}
+
+.inner-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  text-align: center;
+}
+
+.center-target {
+  font-size: 24px;
+  font-weight: 600;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.target-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.target-divider {
+  color: #475569;
+  opacity: 0.6;
 }
 
 @media (max-width: 768px) {
@@ -98,25 +69,16 @@
     padding: 1rem;
   }
 
-  .gauge-container {
-    width: 280px;
-    height: 280px;
+  .gauge-circle {
+    width: 300px;
+    height: 300px;
   }
 
-  .readout-overlay {
-    top: 50px;
-    padding: 0 30px;
-  }
-
-  .value {
-    font-size: 24px;
-  }
-
-  .unit {
-    font-size: 12px;
+  .gauge-value-label {
+    font-size: 16px;
   }
 
   .center-target {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
